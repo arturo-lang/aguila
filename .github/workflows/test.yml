@@ -38,6 +38,6 @@ jobs:
         run: |
           docker pull arturolang/arturo
 
-      - name: Run Tests
-        run: |
-          docker run -i -v $(pwd):/home arturolang/arturo tests/test1.art
+      # - name: Run Tests
+      #   run: |
+      #     docker run -i -v $(pwd):/home arturolang/arturo tests/test1.art
