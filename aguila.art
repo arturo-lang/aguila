@@ -18,9 +18,130 @@ Aguila: #[
 ; The main library
 ;--------------------------
 
-app: function [blk][
+app: function [ui,methods][
+    main: {!html
+        <!DOCTYPE html>
+            <html style = 'overflow-y:hidden'>
+            <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <title>Hello Bulma!</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+                <style type="text/css" media="screen">
+                    body {
+                        display: flex;
+                        min-height: 100vh;
+                        flex-direction: column;
+                    }
+                
+                    #wrapper {
+                        flex: 1;
+                    }
+                    </style>
+            </head>
+            <body>
+                <div id="wrapper">
+                    <section class="section">
+                        <div class="container">
+                            <|inner|>
+                        </div>
+                    </section>
+                </div>
+                <footer class="footer" style="display: flex; justify-content: center; padding: 1.5em">
+                    <div class="columns is-vcentered">
+                        <div class="content has-text-centered has-text-grey-light">
+                            <p>Created in <span style="color:#30668B; font-family: Futura;">águila</span>. Written in Arturo.</p>
+                        </div>
+                    </div>
+                </footer>
+                <script>
+                    function dispatch(action){
+                        console.log(webview[action]("one","two"));
+                    }
+                    
+                    function fetch(what){
+                        // webview.send("doneeee");
+                        console.log(`received in fetch: ${what}`);
+                        return "done-yes!";
+                    }
+                </script>
+            </body>
+        </html>
+    }
 
+    vbox: function [contents][
+        contents: join map @contents 'c -> render.template {!html
+            <div class="columns is-mobile"><|c|></div>
+        }
+        render.template {!html
+            <div class="columns is-mobile">
+                <div class="column">
+                    <|contents|>
+                </div>
+            </div>
+        }
+    ]
+
+    hbox: function [contents] [
+        join @contents
+    ]
+
+    wrapcol: function [content] -> render.template {!html
+        <div class="column"><|content|></div>
+    }
+
+    button: function [title,action] -> wrapcol render {!html
+        <button class="button is-fullwidth is-info" onclick="dispatch('|action|')">|title|</button>
+    }
+
+    textinput: function [id,placeholder] -> wrapcol render {!html
+        <input id="|id|" class="input" type="text" placeholder="|placeholder|">
+    }
+
+    inner: vbox ui
+    page: render.template main
+
+    write "tmp.html" page
+    print execute "tidy -i tmp.html"
+
+    webview .title: attr "title"
+            page
+            #methods
 ]
+
+fetch: function [id][
+    print "attr value set"
+    print ["calling " ~"document.getElementById('|id|').value"]
+    result: read.json call "_webEval" @[~"document.getElementById('|id|').value"]
+    print ["got:" result "type:" type result]
+    if? attr? 'int -> return to :integer result
+    else -> return result
+]
+
+put: function [id,val][
+    print "attr value set"
+    print ["calling " ~"document.getElementById('|id|').value"]
+    result: read.json call "_webEval" @[~"document.getElementById('|id|').value = '|val|'"]
+    print ["got:" result "type:" type result]
+    return result
+]
+
+if standalone? ::
+
+    app .title: "Simple Calculator" [
+        hbox [
+            textinput 'input1 "first number"
+            textinput 'input2 "second number"
+        ]
+        button "Add them up!" 'sumUp
+        textinput 'result ""
+    ] 
+    
+    ::
+    
+    sumUp: function [args] ->
+        put 'result 
+            (fetch.int 'input1) + (fetch.int 'input2)
 
 ;==========================================
 ; This is the end,
