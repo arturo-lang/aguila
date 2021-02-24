@@ -7,6 +7,6 @@
   <img src="https://img.shields.io/github/workflow/status/arturo-lang/aguila/Run%20Tests?style=for-the-badge">
 </p>
 
-<p align="center"><img width="90%" align="center" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/screenshot.gif"/></p>
+<p align="center"><img width="90%" align="center" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/aguila.gif"/></p>
 
 --- 
