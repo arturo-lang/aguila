@@ -1,4 +1,4 @@
-<p align="center"><img align="center" width="350" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/logo.png"/></p>
+<p align="center"><img align="center" width="350" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/aguila.png"/></p>
 <p align="center">
   <b>Modern cross-platform webview-based desktop apps<br>without HTML/CSS/JS</b>
   <br><br>
