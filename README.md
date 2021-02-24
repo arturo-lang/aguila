@@ -1,6 +1,6 @@
 <p align="center"><img align="center" width="350" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/aguila.png"/></p>
 <p align="center">
-  <b>Modern cross-platform webview-based desktop apps<br>without HTML/CSS/JS</b>
+  <b>Modern cross-platform Webview-based Desktop apps<br>without HTML/CSS/JS</b>
   <br><br>
   <img src="https://img.shields.io/github/license/arturo-lang/aguila?style=for-the-badge">
   <img src="https://img.shields.io/badge/language-Arturo-orange.svg?style=for-the-badge">
