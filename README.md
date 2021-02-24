@@ -50,7 +50,7 @@ app .title: "Simple Calculator" [
 
 ### Installation
 
-To install local, first you have to have installed the latest version of [Arturo](https://github.com/arturo-lang/arturo).
+To install locally, first you have to have installed the latest version of [Arturo](https://github.com/arturo-lang/arturo).
 
 Then, just clone this repo and simply go to the folder via your terminal.
 
