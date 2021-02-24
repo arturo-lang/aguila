@@ -1,0 +1,28 @@
+#!/usr/bin/env arturo
+;==========================================
+; Aguila
+;
+; Modern cross-platform 
+; WebView-based Desktop apps
+; without HTML/CSS/JS
+;
+; @file: aguila.art
+; @author: drkameleon
+;==========================================
+
+Aguila: #[
+    version: "0.0.1"
+] 
+
+;--------------------------
+; The main library
+;--------------------------
+
+app: function [blk][
+
+]
+
+;==========================================
+; This is the end,
+; my only friend, the end...
+;==========================================
