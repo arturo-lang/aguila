@@ -6,142 +6,358 @@
 ; WebView-based Desktop apps
 ; without HTML/CSS/JS
 ;
-; @file: aguila.art
-; @author: drkameleon
+; file: aguila.art
+; author: drkameleon
+; copyright: 2021
+; license: MIT
 ;==========================================
 
-Aguila: #[
+Aguila: # [
     version: "0.0.1"
 ] 
 
-;--------------------------
+;==============================
 ; The main library
-;--------------------------
+;==============================
 
-app: function [ui,methods][
-    main: {!html
-        <!DOCTYPE html>
-            <html style = 'overflow-y:hidden'>
-            <head>
-                <meta charset="utf-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1">
-                <title>Hello Bulma!</title>
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-                <style type="text/css" media="screen">
-                    body {
-                        display: flex;
-                        min-height: 100vh;
-                        flex-direction: column;
-                    }
-                
-                    #wrapper {
-                        flex: 1;
-                    }
-                    </style>
-            </head>
-            <body>
-                <div id="wrapper">
-                    <section class="section">
-                        <div class="container">
-                            <|inner|>
-                        </div>
-                    </section>
-                </div>
-                <footer class="footer" style="display: flex; justify-content: center; padding: 1.5em">
-                    <div class="columns is-vcentered">
-                        <div class="content has-text-centered has-text-grey-light">
-                            <p>Created in <span style="color:#30668B; font-family: Futura;">águila</span>. Written in Arturo.</p>
-                        </div>
-                    </div>
-                </footer>
-                <script>
-                    function dispatch(action){
-                        console.log(webview[action]("one","two"));
-                    }
-                    
-                    function fetch(what){
-                        // webview.send("doneeee");
-                        console.log(`received in fetch: ${what}`);
-                        return "done-yes!";
-                    }
-                </script>
-            </body>
-        </html>
+app: function [ui].exportable [
+
+    ;------------------------
+    ; private helpers
+    ;------------------------
+
+    let {_methods} # []
+    let {_runMethod} function [method].exportable [
+            do.import get var "_methods" method\0
+        ]
+
+    ;------------------------
+    ; public methods
+    ;------------------------
+
+    fetch: function [id][
+        result: read.json call "_webEval" @[~"document.getElementById('|id|').value"]
+        if? attr? 'int  -> return to :integer result
+        else            -> return result
+    ]
+
+    put: function [id,val][
+        return read.json call "_webEval" @[~"document.getElementById('|id|').value = '|val|'"]
+    ]
+
+    ;------------------------
+    ; ui components
+    ;------------------------
+
+    ;; generic helpers
+
+    setwidth: function [][
+        widths: new []
+        loop [
+            ; width
+            'threeQuarters 'twoThirds 'half
+            'oneThird 'oneQuarter 'full
+            'fourFifths 'threeFifths 'twoFifths 'oneFifth
+        ] 'at [
+            if attr? at [
+                print ["found at:" at]
+                x: attr at
+
+                clean: replace
+                            replace replace to :string at "Q" "-q"
+                            "T" "-t"
+                            "F" "-f"
+
+                return ~"is-|clean|"
+            ]
+        ]
+        return ""
+    ]
+
+    setstyle: function [][
+        styles: new []
+        loop [
+            ; color
+            'white 'light 'dark 'black 
+            'text 'ghost 'primary 'link
+            'info 'success 'warning 'danger
+
+            ; size
+            'small 'normal 'medium 'large
+
+            ; shape
+            'rounded
+        ] 'at [
+            if attr? at [
+                x: attr at
+                'styles ++ ~"is-|at|"
+            ]
+        ]
+
+        loop [
+            'centered 'justified 'left 'right
+        ] 'at [
+            if attr? at [
+                x: attr at
+                'styles ++ ~"has-text-|at|"
+            ]
+        ]
+
+        loop [
+            ; color
+            'whitefg 'lightfg 'darkfg 'blackfg
+            'textfg 'ghostfg 'primaryfg 'linkfg
+            'infofg 'successfg 'warningfg 'dangerfg
+        ] 'at [
+            if attr? at [
+                x: attr at
+                item: replace to :string at "fg" ""
+                'styles ++  ~"has-text-|item|"
+            ]
+        ]
+
+        return join.with:" " styles
+    ]
+
+    wrapcol: function [content] -> render {!html
+        <div class="column |setwidth|">|content|</div>
     }
+
+    ;; containers
 
     vbox: function [contents][
         contents: join map @contents 'c -> render.template {!html
             <div class="columns is-mobile"><|c|></div>
         }
         render.template {!html
-            <div class="columns is-mobile">
-                <div class="column">
-                    <|contents|>
-                </div>
+            <div class="column">
+                <|contents|>
             </div>
         }
     ]
 
-    hbox: function [contents] [
+    hbox: function [contents] ->
         join @contents
+    
+    box: function [contents][
+        wrapcol render.template {!html
+            <div class="box">
+                <|join @contents|>
+            </div>
+        }
     ]
 
-    wrapcol: function [content] -> render.template {!html
-        <div class="column"><|content|></div>
-    }
+    ;; elements
 
-    button: function [title,action] -> wrapcol render {!html
-        <button class="button is-fullwidth is-info" onclick="dispatch('|action|')">|title|</button>
+    label: function [text] -> wrapcol render {!html
+        <p class="|setstyle|">|text|</p>
     }
 
     textinput: function [id,placeholder] -> wrapcol render {!html
-        <input id="|id|" class="input" type="text" placeholder="|placeholder|">
+        <input id="|id|" class="input |setstyle|" type="text" placeholder="|placeholder|">
     }
 
-    inner: vbox ui
-    page: render.template main
+    textarea: function [id,rows,placeholder] -> wrapcol render {!html
+        <textarea id="|id|" class="textarea |setstyle|" rows="|rows|" placeholder="|placeholder|"></textarea>
+    }
 
-    write "tmp.html" page
+    icon: function [name] -> render {!html
+        <span class="icon">
+            <ion-icon name="|name|"></ion-icon>
+        </span>
+    }
+
+    button: function [ttl,action] [ 
+        if? not? literal? action [
+            randId: ~"funcid|random 1 100||random 1 100|"
+            set var "_methods" randId action
+            action: randId
+            wrapcol render {!html
+                <button class="button is-fullwidth |setstyle|" onclick="arturo.call('_runMethod',['|action|'])">|ttl|</button>
+            }
+        ]
+        else [
+            wrapcol render {!html
+                <button class="button is-fullwidth |setstyle|" onclick="arturo.call('|action|',[])">|ttl|</button>
+            }
+        ]
+    ]
+
+    dropdown: function [id,items] -> wrapcol render {!html
+        <div class="select is-link">
+            <select>
+                |map as.agnostic items 'item ->
+                    "<option>" ++ (to :string item) ++ "</option>"|
+            </select>
+        </div>
+    }
+
+    tabs: function [items][
+        items: join map as.agnostic items 'item -> ~"<li><a>|item|</a></li>"
+        wrapcol render {!html
+            <div class="tabs |setstyle|">
+                <ul>
+                    |items|
+                </ul>
+            </div>
+        }
+    ]
+
+    ;------------------------
+    ; main renderer
+    ;------------------------
+
+    page: function [inner][ render.template {!html
+            <!DOCTYPE html>
+                <html style = 'overflow-y:hidden'>
+                <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <title>Hello Bulma!</title>
+                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+                    <style type="text/css" media="screen">
+                        </style>
+                </head>
+                <body>
+                    <div id="wrapper">
+                        <section class="section">
+                            <div class="container">
+                                <div class="columns is-mobile">
+                                    <|inner|>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <!--<footer class="footer" style="display: flex; justify-content: center; padding: 1.5em">
+                        <div class="columns is-vcentered">
+                            <div class="content has-text-centered has-text-grey-light">
+                                <p>Created with <span style="color:#30668B; font-family: Futura;">águila</span>. Written in Arturo.</p>
+                            </div>
+                        </div>
+                    </footer>-->
+                    <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+                </body>
+            </html>
+        }
+    ]
+
+    main: page vbox ui
+
+    write "tmp.html" main
     print execute "tidy -i tmp.html"
 
-    webview .title: attr "title"
-            page
-            #methods
-]
-
-fetch: function [id][
-    print "attr value set"
-    print ["calling " ~"document.getElementById('|id|').value"]
-    result: read.json call "_webEval" @[~"document.getElementById('|id|').value"]
-    print ["got:" result "type:" type result]
-    if? attr? 'int -> return to :integer result
-    else -> return result
-]
-
-put: function [id,val][
-    print "attr value set"
-    print ["calling " ~"document.getElementById('|id|').value"]
-    result: read.json call "_webEval" @[~"document.getElementById('|id|').value = '|val|'"]
-    print ["got:" result "type:" type result]
-    return result
+    webview .title: attr 'title main
 ]
 
 if standalone? ::
 
-    app .title: "Simple Calculator" [
-        hbox [
-            textinput 'input1 "first number"
-            textinput 'input2 "second number"
+    ; zeroPressed: function [args][ 
+    ;     inspect args
+    ;     print "zeroPressed" put 'screen (fetch 'screen)++"0" "zero"
+    ; ]
+
+    ; onePressed: function [args][ print "onePressed" put 'screen (fetch 'screen)++"1" "one"]
+    ; twoPressed: function [args][ print "twoPressed" put 'screen (fetch 'screen)++"2" "two"]
+    ; threePressed: function [args][ print "threePressed" put 'screen (fetch 'screen)++"3" "three"]
+    ; fourPressed: function [args][ print "fourPressed" put 'screen (fetch 'screen)++"4" "four"]
+    ; fivePressed: function [args][ print "fivePressed" put 'screen (fetch 'screen)++"5" "five"]
+    ; sixPressed: function [args][ print "sixPressed" put 'screen (fetch 'screen)++"6" "six"]
+    ; sevenPressed: function [args][ print "sevenPressed" put 'screen (fetch 'screen)++"7" "seven"]
+    ; eightPressed: function [args][ print "eightPressed" put 'screen (fetch 'screen)++"8" "eight"]
+    ; ninePressed: function [args][ print "ninePressed" put 'screen (fetch 'screen)++"9" "nine"]
+
+    ; cPressed: $[args][put 'screen "" "ac"]
+
+    prevNumber: 0
+    prevSym: ""
+    cleanScreen:  function [][put 'screen ""]
+    digitPressed: function [digit][put 'screen (fetch'screen)++digit]
+    setOperation: function [sym].export:[prevNumber,prevSym][
+        prevNumber: fetch'screen
+        prevSym: sym
+        cleanScreen
+    ]
+    calculate: function [][
+        currNumber: fetch'screen
+        calc: do ~"|prevNumber||prevSym||currNumber|"
+        put 'screen calc
+        prevNumber: calc
+    ]
+
+    app .fixed
+        .title: "Calculator"
+        .width:400
+        .debug: true
+        .height:550 [
+        tabs [
+            "one"
+            "two"
+            "three"
         ]
-        button "Add them up!" 'sumUp
-        textinput 'result ""
-    ] 
+        textinput.large.right 'screen "0"
+        hbox [
+            button.dark "C"     -> cleanScreen
+            button.dark "+/-"   []
+            button.dark "%"     []
+            button.danger "+"   -> setOperation "+"
+        ]
+        hbox [
+            button "1"          -> digitPressed "1"
+            button "2"          -> digitPressed "2"
+            button "3"          -> digitPressed "3"
+            button.danger "-"   -> setOperation "-"
+        ]
+        hbox [
+            button "4"          -> digitPressed "4"
+            button "5"          -> digitPressed "5"
+            button "6"          -> digitPressed "6"
+            button.danger "x"   -> setOperation "*"
+        ]
+        hbox [
+            button "7"          -> digitPressed "7"
+            button "8"          -> digitPressed "8"
+            button "9"          -> digitPressed "9"
+            button.danger "/"   -> setOperation "/"
+        ]
+        hbox [
+            button "."                  -> digitPressed "."
+            button "0"                  -> digitPressed "0"
+            button.success.half "="     -> calculate
+        ]
+        label.centered.lightfg {Created with Aguila. Written in Arturo.}
+    ]
+
+    ; app .ttl: "Simple Calculator" [
+    ;     hbox [
+    ;         textinput 'input1 "first number"
+    ;         textinput 'input2 "second number"
+    ;     ]
+    ;     button.danger "Add them up!" 'sumUp
+    ;     textinput 'result ""
+    ;     hbox [
+    ;         textarea 'text 10 "something"
+    ;         vbox [
+    ;             button.info "Something" 'sumUp
+    ;             button.success "Something else" 'sumUp
+    ;             hbox [
+    ;                 textinput 're1 "re1"
+    ;                 vbox [
+    ;                     textinput 're2 "re2"
+    ;                     hbox [
+    ;                         textinput.small 're3 "re2"
+    ;                         button.small.dark "somethingss" 'sumUp
+    ;                     ]
+    ;                 ]
+    ;             ]
+    ;         ]
+    ;     ]
+    ; ] 
     
-    ::
+    ; ::
     
-    sumUp: function [args] ->
-        put 'result 
-            (fetch.int 'input1) + (fetch.int 'input2)
+    ; sumUp: function [args] ->
+    ;     put 'result 
+    ;         (fetch.int 'input1) + (fetch.int 'input2)
 
 ;==========================================
 ; This is the end,
