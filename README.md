@@ -25,9 +25,9 @@
  
 ---
 
-## At A Glance 🚀
+## At A Glance  🚀
 
-This is the *whole* 26-lines-strong code that creates the app above. Packaged and zipped, it takes less than 1.5 MB 
+This is the *whole* 26-lines-strong code that creates the app above. Packaged and zipped, it takes less than 1.5 MB. Yep.
 
 <p align="center"><img align="center" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/screenshot.png"/></p>
 
