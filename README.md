@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/github/workflow/status/arturo-lang/aguila/Run%20Tests?style=for-the-badge">
 </p>
 
-<p align="center"><img width="90%" align="center" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/aguila.gif"/></p>
+<p align="center"><img width="90%" align="center" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/screenshot.gif"/></p>
 
 --- 
 
@@ -29,24 +29,7 @@
 
 This is the *whole* code that creates the app above:
 
-```red
-import {aguila.art}
-
-app .title: "Simple Calculator" [
-        hbox [
-            textinput 'input1 "first number"
-            textinput 'input2 "second number"
-        ]
-        button "Add them up!" 'sumUp
-        textinput 'result ""
-    ] 
-    
-    ::
-    
-    sumUp: function [args] ->
-        put 'result 
-            (fetch.int 'input1) + (fetch.int 'input2)
-```
+<p align="center"><img width="90%" align="center" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/screenshot.png"/></p>
 
 ## Try Aguila!
 
