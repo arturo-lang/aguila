@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/github/workflow/status/arturo-lang/aguila/Run%20Tests?style=for-the-badge">
 </p>
 
-<p align="center"><img width="90%" align="center" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/screenshot.gif"/></p>
+<p align="center"><img width="90%" align="center" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/docs/assets/screenshot.gif"/></p>
 
 --- 
 
@@ -29,7 +29,7 @@
 
 This is the *whole* 26-lines-strong code that creates the app above. Packaged and zipped, it takes less than 1.5 MB. Yep.
 
-<p align="center"><img align="center" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/screenshot.png"/></p>
+<p align="center"><img align="center" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/docs/assets/screenshot.png"/></p>
 
 ## Try Aguila!
 
