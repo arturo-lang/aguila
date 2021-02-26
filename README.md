@@ -29,7 +29,7 @@
 
 This is the *whole* code that creates the app above:
 
-<p align="center"><img width="90%" align="center" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/screenshot.png"/></p>
+<p align="center"><img align="center" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/screenshot.png"/></p>
 
 ## Try Aguila!
 
