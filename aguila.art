@@ -36,13 +36,13 @@ app: function [ui].exportable [
     ;------------------------
 
     fetch: function [id][
-        result: read.json call "_webEval" @[~"document.getElementById('|id|').value"]
+        result: read.json eval ~"document.getElementById('|id|').value"
         if? attr? 'int  -> return to :integer result
         else            -> return result
     ]
 
     put: function [id,val][
-        return read.json call "_webEval" @[~"document.getElementById('|id|').value = '|val|'"]
+        return read.json eval ~"document.getElementById('|id|').value = '|val|'"
     ]
 
     ;------------------------
@@ -243,121 +243,11 @@ app: function [ui].exportable [
 
     main: page vbox ui
 
-    write "tmp.html" main
-    print execute "tidy -i tmp.html"
+    ; write "tmp.html" main
+    ; print execute "tidy -i tmp.html"
 
     webview .title: attr 'title main
 ]
-
-if standalone? ::
-
-    ; zeroPressed: function [args][ 
-    ;     inspect args
-    ;     print "zeroPressed" put 'screen (fetch 'screen)++"0" "zero"
-    ; ]
-
-    ; onePressed: function [args][ print "onePressed" put 'screen (fetch 'screen)++"1" "one"]
-    ; twoPressed: function [args][ print "twoPressed" put 'screen (fetch 'screen)++"2" "two"]
-    ; threePressed: function [args][ print "threePressed" put 'screen (fetch 'screen)++"3" "three"]
-    ; fourPressed: function [args][ print "fourPressed" put 'screen (fetch 'screen)++"4" "four"]
-    ; fivePressed: function [args][ print "fivePressed" put 'screen (fetch 'screen)++"5" "five"]
-    ; sixPressed: function [args][ print "sixPressed" put 'screen (fetch 'screen)++"6" "six"]
-    ; sevenPressed: function [args][ print "sevenPressed" put 'screen (fetch 'screen)++"7" "seven"]
-    ; eightPressed: function [args][ print "eightPressed" put 'screen (fetch 'screen)++"8" "eight"]
-    ; ninePressed: function [args][ print "ninePressed" put 'screen (fetch 'screen)++"9" "nine"]
-
-    ; cPressed: $[args][put 'screen "" "ac"]
-
-    prevNumber: 0
-    prevSym: ""
-    cleanScreen:  function [][put 'screen ""]
-    digitPressed: function [digit][put 'screen (fetch'screen)++digit]
-    setOperation: function [sym].export:[prevNumber,prevSym][
-        prevNumber: fetch'screen
-        prevSym: sym
-        cleanScreen
-    ]
-    calculate: function [][
-        currNumber: fetch'screen
-        calc: do ~"|prevNumber||prevSym||currNumber|"
-        put 'screen calc
-        prevNumber: calc
-    ]
-
-    app .fixed
-        .title: "Calculator"
-        .width:400
-        .debug: true
-        .height:550 [
-        tabs [
-            "one"
-            "two"
-            "three"
-        ]
-        textinput.large.right 'screen "0"
-        hbox [
-            button.dark "C"     -> cleanScreen
-            button.dark "+/-"   []
-            button.dark "%"     []
-            button.danger "+"   -> setOperation "+"
-        ]
-        hbox [
-            button "1"          -> digitPressed "1"
-            button "2"          -> digitPressed "2"
-            button "3"          -> digitPressed "3"
-            button.danger "-"   -> setOperation "-"
-        ]
-        hbox [
-            button "4"          -> digitPressed "4"
-            button "5"          -> digitPressed "5"
-            button "6"          -> digitPressed "6"
-            button.danger "x"   -> setOperation "*"
-        ]
-        hbox [
-            button "7"          -> digitPressed "7"
-            button "8"          -> digitPressed "8"
-            button "9"          -> digitPressed "9"
-            button.danger "/"   -> setOperation "/"
-        ]
-        hbox [
-            button "."                  -> digitPressed "."
-            button "0"                  -> digitPressed "0"
-            button.success.half "="     -> calculate
-        ]
-        label.centered.lightfg {Created with Aguila. Written in Arturo.}
-    ]
-
-    ; app .ttl: "Simple Calculator" [
-    ;     hbox [
-    ;         textinput 'input1 "first number"
-    ;         textinput 'input2 "second number"
-    ;     ]
-    ;     button.danger "Add them up!" 'sumUp
-    ;     textinput 'result ""
-    ;     hbox [
-    ;         textarea 'text 10 "something"
-    ;         vbox [
-    ;             button.info "Something" 'sumUp
-    ;             button.success "Something else" 'sumUp
-    ;             hbox [
-    ;                 textinput 're1 "re1"
-    ;                 vbox [
-    ;                     textinput 're2 "re2"
-    ;                     hbox [
-    ;                         textinput.small 're3 "re2"
-    ;                         button.small.dark "somethingss" 'sumUp
-    ;                     ]
-    ;                 ]
-    ;             ]
-    ;         ]
-    ;     ]
-    ; ] 
-    
-    ; ::
-    
-    ; sumUp: function [args] ->
-    ;     put 'result 
-    ;         (fetch.int 'input1) + (fetch.int 'input2)
 
 ;==========================================
 ; This is the end,
