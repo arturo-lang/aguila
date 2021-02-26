@@ -27,7 +27,7 @@
 
 ## At A Glance
 
-This is the *whole* code that creates the app above:
+This is the *whole* 26-lines-strong code that creates the app above:
 
 <p align="center"><img align="center" src="https://raw.githubusercontent.com/arturo-lang/aguila/master/screenshot.png"/></p>
 
