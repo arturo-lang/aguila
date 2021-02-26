@@ -49,25 +49,45 @@ app: function [ui].exportable [
     ; ui components
     ;------------------------
 
+    ;; constants
+
+    sizeAttributes: [
+        ; width
+        'threeQuarters 'twoThirds 'half
+        'oneThird 'oneQuarter 'full
+        'fourFifths 'threeFifths 'twoFifths 'oneFifth
+    ]
+
+    styleAttributes: [
+        ; color
+        'white 'light 'dark 'black 
+        'text 'ghost 'primary 'link
+        'info 'success 'warning 'danger
+
+        ; size
+        'small 'normal 'medium 'large
+
+        ; shape
+        'rounded
+    ]
+
+    alignmentAttributes: [
+        'centered 'justified 'left 'right
+    ]
+
+    foregroundAttributes: [
+        'whitefg 'lightfg 'darkfg 'blackfg
+        'textfg 'ghostfg 'primaryfg 'linkfg
+        'infofg 'successfg 'warningfg 'dangerfg
+    ]
+
     ;; generic helpers
 
     setwidth: function [][
         widths: new []
-        loop [
-            ; width
-            'threeQuarters 'twoThirds 'half
-            'oneThird 'oneQuarter 'full
-            'fourFifths 'threeFifths 'twoFifths 'oneFifth
-        ] 'at [
-            if attr? at [
-                print ["found at:" at]
-                x: attr at
-
-                clean: replace
-                            replace replace to :string at "Q" "-q"
-                            "T" "-t"
-                            "F" "-f"
-
+        loop sizeAttributes 'at [
+            if attr at [
+                clean: replace replace replace to :string at "Q" "-q" "T" "-t" "F" "-f"
                 return ~"is-|clean|"
             ]
         ]
@@ -76,41 +96,16 @@ app: function [ui].exportable [
 
     setstyle: function [][
         styles: new []
-        loop [
-            ; color
-            'white 'light 'dark 'black 
-            'text 'ghost 'primary 'link
-            'info 'success 'warning 'danger
-
-            ; size
-            'small 'normal 'medium 'large
-
-            ; shape
-            'rounded
-        ] 'at [
-            if attr? at [
-                x: attr at
-                'styles ++ ~"is-|at|"
-            ]
+        loop styleAttributes 'at [
+            if attr at -> 'styles ++ ~"is-|at|"
         ]
 
-        loop [
-            'centered 'justified 'left 'right
-        ] 'at [
-            if attr? at [
-                x: attr at
-                'styles ++ ~"has-text-|at|"
-            ]
+        loop alignmentAttributes 'at [
+            if attr at -> 'styles ++ ~"has-text-|at|"
         ]
 
-        loop [
-            ; color
-            'whitefg 'lightfg 'darkfg 'blackfg
-            'textfg 'ghostfg 'primaryfg 'linkfg
-            'infofg 'successfg 'warningfg 'dangerfg
-        ] 'at [
-            if attr? at [
-                x: attr at
+        loop foregroundAttributes 'at [
+            if attr at [
                 item: replace to :string at "fg" ""
                 'styles ++  ~"has-text-|item|"
             ]
