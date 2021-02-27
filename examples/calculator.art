@@ -28,7 +28,7 @@ do ::
     drk: function [x][ button.dark x -> cleanScreen ]
 
     ; main ui
-    app .fixed .title: "Calculator" .width:400 .height:460 [
+    app .fixed .title: "Calculator" .width:400 .height:460 .padding:30 [
         textinput.large.right 'screen "0"
         hbox [ drk "C" drk "~" drk "%" ope "+" ]
         hbox [ btn "1" btn "2" btn "3" ope "-" ]
