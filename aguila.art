@@ -81,6 +81,10 @@ app: function [ui].exportable [
         'infofg 'successfg 'warningfg 'dangerfg
     ]
 
+    fontsizeAttributes: [
+        "1" "2" "3" "4" "5" "6"
+    ]
+
     ;; generic helpers
 
     setwidth: function [][
@@ -114,6 +118,13 @@ app: function [ui].exportable [
         return join.with:" " styles
     ]
 
+    setfontsize: function [][
+        loop fontsizeAttributes 'at [
+            if attr at -> return ~"is-|at|"
+        ]
+        return ""
+    ]
+
     wrapcol: function [content] -> render {!html
         <div class="column |setwidth|">|content|</div>
     }
@@ -143,6 +154,14 @@ app: function [ui].exportable [
     ]
 
     ;; elements
+
+    header: function [text] -> wrapcol render {!html
+        <span class="title |setfontsize|">|text|</span>
+    }
+
+    subheader: function [text] -> wrapcol render {!html
+        <span class="subtitle |setfontsize|">|text|</span>
+    }
 
     label: function [text] -> wrapcol render {!html
         <p class="|setstyle|">|text|</p>
@@ -188,7 +207,12 @@ app: function [ui].exportable [
     }
 
     tabs: function [items][
-        items: join map as.agnostic items 'item -> ~"<li><a>|item|</a></li>"
+        items: as.agnostic items
+        items: join map items 'item [
+            active: ""
+            if item = first items -> active: "class='is-active'"
+            ~"<li |active| ><a>|item|</a></li>"
+        ]
         wrapcol render {!html
             <div class="tabs |setstyle|">
                 <ul>
@@ -214,14 +238,14 @@ app: function [ui].exportable [
                         </style>
                 </head>
                 <body>
-                    <div id="wrapper">
-                        <section class="section">
+                    <div id="wrapper" style="padding: <|attr 'padding|>px;">
+                        <!--<section class="section">-->
                             <div class="container">
                                 <div class="columns is-mobile">
                                     <|inner|>
                                 </div>
                             </div>
-                        </section>
+                        <!--</section>-->
                     </div>
                     <!--<footer class="footer" style="display: flex; justify-content: center; padding: 1.5em">
                         <div class="columns is-vcentered">
@@ -238,8 +262,8 @@ app: function [ui].exportable [
 
     main: page vbox ui
 
-    ; write "tmp.html" main
-    ; print execute "tidy -i tmp.html"
+    write "tmp.html" main
+    print execute "tidy -i tmp.html"
 
     webview .title: attr 'title main
 ]
