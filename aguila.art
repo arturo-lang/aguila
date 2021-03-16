@@ -133,11 +133,11 @@ app: function [ui].exportable [
 
     vbox: function [contents][
         contents: join map @contents 'c -> render.template {!html
-            <div class="columns is-mobile"><|=c|></div>
+            <div class="columns is-mobile"><||=c||></div>
         }
         render.template {!html
             <div class="column">
-                <|=contents|>
+                <||=contents||>
             </div>
         }
     ]
@@ -148,7 +148,7 @@ app: function [ui].exportable [
     box: function [contents][
         wrapcol render.template {!html
             <div class="box">
-                <|=join @contents|>
+                <||=join @contents||>
             </div>
         }
     ]
@@ -238,11 +238,11 @@ app: function [ui].exportable [
                         </style>
                 </head>
                 <body>
-                    <div id="wrapper" style="padding: <|=attr 'padding|>px;">
+                    <div id="wrapper" style="padding: <||=attr 'padding||>px;">
                         <!--<section class="section">-->
                             <div class="container">
                                 <div class="columns is-mobile">
-                                    <|=inner|>
+                                    <||=inner||>
                                 </div>
                             </div>
                         <!--</section>-->
