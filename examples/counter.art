@@ -1,0 +1,25 @@
+; copyright (c) 2021 trekLOF
+
+do.import {aguila.art}
+
+do ::
+    counter: 0
+    setplus: function => [
+        inc 'counter
+        put 'counttext to :string counter
+    ]
+
+    setmin: function => [
+        dec 'counter 
+        put 'counttext  to :string counter 
+    ] 
+
+
+    app.debug .title: "counter testje" .width:400 .height: 600 .padding:30 [
+        hbox[
+            button.success " + " [setplus]
+            label 'counttext "0"
+            button.success " - " [setmin]
+
+        ]
+    ]
