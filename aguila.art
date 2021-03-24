@@ -30,6 +30,9 @@ app: function [ui].exportable [
     let {_runMethod} function [method].exportable [
             do.import get var "_methods" method\0
         ]
+    let {_getTag} function [id][
+            read.json eval ~"document.getElementById('|id|').tagName"
+        ]
 
     ;------------------------
     ; public methods
@@ -42,7 +45,10 @@ app: function [ui].exportable [
     ]
 
     put: function [id,val][
-        return read.json eval ~"document.getElementById('|id|').value = '|val|'"
+        if? "INPUT" = call {_getTag} @[id] ->
+            return read.json eval ~"document.getElementById('|id|').value = '|val|'"
+        else ->
+            return read.json eval ~"document.getElementById('|id|').innerHTML = '|val|'"
     ]
 
     ;------------------------
@@ -163,8 +169,8 @@ app: function [ui].exportable [
         <span class="subtitle |setfontsize|">|text|</span>
     }
 
-    label: function [text] -> wrapcol render {!html
-        <p class="|setstyle|">|text|</p>
+    label: function [id,text] -> wrapcol render {!html
+        <p id="|id|" class="|setstyle|">|text|</p>
     }
 
     textinput: function [id,placeholder] -> wrapcol render {!html
