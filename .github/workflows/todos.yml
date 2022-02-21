@@ -1,0 +1,17 @@
+name: "TODO -> Issue"
+on:
+  push:
+    branches:
+      - 'main'
+    tags-ignore:
+      - '**'
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@main"
+      - name: "TODO to Issue generator"
+        uses: "alstr/todo-to-issue-action@v4.5"
+        id: "todo"
+        with:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
